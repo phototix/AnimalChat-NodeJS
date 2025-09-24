@@ -11,7 +11,7 @@ let chatHistory = [];
 // Random animal names in Simplified Chinese
 const animals = [
   "狮子","老虎","大象","长颈鹿","熊猫","考拉","斑马","狼","狐狸","熊",
-  "兔子","猴子","企鹅","海豚","鲨鱼","水獭","马","狗","猫","猫头鹰"
+  "兔子","猴子","企鹅","海豚","鲨鱼","水獺","马","狗","猫","猫头鹰"
 ];
 
 function getRandomAnimal() {
@@ -27,8 +27,8 @@ io.on('connection', (socket) => {
     // Send previous chat history
     socket.emit('chat history', chatHistory);
 
-    // Notify user joined
-    io.emit('chat message', { user: 'System', msg: `${username} has joined the chat.` });
+    // Notify user joined (Simplified Chinese)
+    io.emit('chat message', { user: '系统', msg: `${username} 已加入聊天室。` });
 
     socket.on('chat message', (msg) => {
         const message = { user: username, msg };
@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        io.emit('chat message', { user: 'System', msg: `${username} has left the chat.` });
+        io.emit('chat message', { user: '系统', msg: `${username} 已离开聊天室。` });
     });
 });
 
