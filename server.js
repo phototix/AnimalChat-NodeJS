@@ -14,15 +14,29 @@ const animals = [
   "兔子","猴子","企鹅","海豚","鲨鱼","水獺","马","狗","猫","猫头鹰"
 ];
 
-function getRandomAnimal() {
-  return animals[Math.floor(Math.random() * animals.length)];
+// Track animal names currently in use
+let inUseAnimals = new Set();
+
+function getRandomUnusedAnimal() {
+  const unused = animals.filter(a => !inUseAnimals.has(a));
+  if (unused.length === 0) return null;
+  return unused[Math.floor(Math.random() * unused.length)];
 }
 
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
-    const username = getRandomAnimal();
+    const username = getRandomUnusedAnimal();
+
+    if (!username) {
+        // No names available, refuse joining
+        socket.emit('chat blocked', { msg: '聊天室已满，请稍后再试。' });
+        socket.disconnect(true);
+        return;
+    }
+
     socket.username = username;
+    inUseAnimals.add(username);
 
     // Send previous chat history
     socket.emit('chat history', chatHistory);
@@ -32,14 +46,18 @@ io.on('connection', (socket) => {
     chatHistory.push({ user: '系统', msg: `${username} 已加入聊天室。` });
 
     socket.on('chat message', (msg) => {
-        const message = { user: username, msg };
-        chatHistory.push(message);
-        io.emit('chat message', message);
+        // Only allow if user is in useAnimals (double check)
+        if (inUseAnimals.has(socket.username)) {
+            const message = { user: username, msg };
+            chatHistory.push(message);
+            io.emit('chat message', message);
+        }
     });
 
     socket.on('disconnect', () => {
         io.emit('chat message', { user: '系统', msg: `${username} 已离开聊天室。` });
         chatHistory.push({ user: '系统', msg: `${username} 已离开聊天室。` });
+        inUseAnimals.delete(username);
     });
 });
 
