@@ -25,6 +25,10 @@ function getRandomUnusedAnimal() {
 
 app.use(express.static('public'));
 
+function sendOnlineAnimals() {
+  io.emit('online animals', Array.from(inUseAnimals));
+}
+
 io.on('connection', (socket) => {
     const username = getRandomUnusedAnimal();
 
@@ -44,6 +48,9 @@ io.on('connection', (socket) => {
     // Notify user joined (Simplified Chinese)
     io.emit('chat message', { user: '系统', msg: `${username} 已加入聊天室。` });
     chatHistory.push({ user: '系统', msg: `${username} 已加入聊天室。` });
+    
+    // 新增：广播当前在线动物
+    sendOnlineAnimals();
 
     socket.on('chat message', (msg) => {
         // Only allow if user is in useAnimals (double check)
@@ -58,6 +65,8 @@ io.on('connection', (socket) => {
         io.emit('chat message', { user: '系统', msg: `${username} 已离开聊天室。` });
         chatHistory.push({ user: '系统', msg: `${username} 已离开聊天室。` });
         inUseAnimals.delete(username);
+        // 新增：广播当前在线动物
+        sendOnlineAnimals();
     });
 });
 
