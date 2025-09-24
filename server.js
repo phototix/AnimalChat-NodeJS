@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         io.emit('chat message', { user: '系统', msg: `${username} 已离开聊天室。` });
+        chatHistory.push({ user: '系统', msg: `${username} 已离开聊天室。` });
     });
 });
 
