@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-const PORT = 4001;
+const PORT = 80;
 
 // In-memory chat history
 let chatHistory = [];
