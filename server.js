@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
 
     // Notify user joined (Simplified Chinese)
     io.emit('chat message', { user: '系统', msg: `${username} 已加入聊天室。` });
-    chatHistory.push({ user: '系统', `${username} 已加入聊天室。` });
+    chatHistory.push({ user: '系统', msg: `${username} 已加入聊天室。` });
 
     socket.on('chat message', (msg) => {
         const message = { user: username, msg };
