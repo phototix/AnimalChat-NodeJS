@@ -7,7 +7,7 @@ A simple real-time chat application built with Node.js, Express, and Socket.IO.
 ### Clone the Repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/phototix/AnimalChat-NodeJS.git
 cd AnimalChat-NodeJS
 ```
 
